@@ -44,7 +44,7 @@ client.connect(err => {
   // });
 
   app.get("/appointments", (req, res) => {
-    console.log(req.query.service);
+    // console.log(req.query.service);
     appointmentCollection
       .find({ service: req.query.service })
       .toArray((err, documents) => {
