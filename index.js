@@ -37,10 +37,19 @@ client.connect(err => {
     });
   });
 
+  // app.get("/bookAppointment", (req, res) => {
+  //   appointmentCollection.find({}).toArray((err, documents) => {
+  //     res.send(documents);
+  //   });
+  // });
+
   app.get("/appointments", (req, res) => {
-    appointmentCollection.find({}).toArray((err, documents) => {
-      res.send(documents);
-    });
+    console.log(req.query.service);
+    appointmentCollection
+      .find({ service: req.query.service })
+      .toArray((err, documents) => {
+        res.send(documents);
+      });
   });
 
   app.post("/appointmentsByDate", (req, res) => {
