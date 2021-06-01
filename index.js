@@ -26,8 +26,10 @@ const client = new MongoClient(uri, {
 
 client.connect(err => {
   console.log(err);
-  
-  const appointmentCollection = client.db("doctorsPortal").collection("appointments");
+
+  const appointmentCollection = client
+    .db("doctorsPortal")
+    .collection("appointments");
   const doctorCollection = client.db("doctorsPortal").collection("doctors");
   const customerCollection = client.db("doctorsPortal").collection("contact");
 
@@ -45,14 +47,19 @@ client.connect(err => {
         res.send(documents);
       });
   });
-
-  
-  app.get('/allAppointments', (req, res) => {
-    appointmentCollection.find({})
-    .toArray((err, documents) => {
+  // dublicate email check
+  app.get("/emailCheck", (req, res) => {
+    const email = req.query.email;
+    appointmentCollection.find({ email }).toArray((err, documents) => {
       res.send(documents);
-    })
-  })
+    });
+  });
+
+  app.get("/allAppointments", (req, res) => {
+    appointmentCollection.find({}).toArray((err, documents) => {
+      res.send(documents);
+    });
+  });
 
   app.post("/appointmentsByDate", (req, res) => {
     const date = req.body;
@@ -63,8 +70,6 @@ client.connect(err => {
         res.send(documents);
       });
   });
-
- 
 
   app.post("/addADoctor", (req, res) => {
     const file = req.files.file;
@@ -99,12 +104,10 @@ client.connect(err => {
 
   app.post("/contact", (req, res) => {
     const customerInfo = req.body;
-    customerCollection.insertOne(customerInfo)
-    .then(result => {
+    customerCollection.insertOne(customerInfo).then(result => {
       res.send(result.insertedCount > 0);
     });
   });
-
 });
 
 app.listen(process.env.PORT || port);
